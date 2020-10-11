@@ -1,37 +1,90 @@
 import React from 'react';
 
 import {StyleSheet, Text, View, TextInput, TouchableOpacity,Image,ImageBackground} from 'react-native';
-
+import axios from "axios";
 
 export default class SignIn extends React.Component {
+    state = {
+        json: {}
+    }
+    data ={email: '', password: ''}
+    /*login = (e) => {
+        this.setState({json:this.data});
+        e.preventDefault();
+        if (this.data.email !== "" && this.data.password !== "") {
+            const fetch = axios.create({
+                 headers: {
+                     'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                baseURL: 'https://sageproject.appspot.com/'
+            })
+            fetch.post('rest/services/login', this.data).then((res) => {
+                this.setState({json:res})
+            }).catch((res) => {
+                console.log(res)
+                this.setState({json:res})
+            });
+        }
+    }*/
+    login = (e) => {
+        if (this.data.email !== "" && this.data.password !== "") {
+            const params = this.data, formData = new FormData();
+
+            for (var k in params) {
+                formData.append(k, params[k]);
+            }
+
+            var request = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData
+            };
+
+            fetch('https://sageproject.appspot.com/rest/services/login', request).then((res) => {
+                this.setState({json: res})
+            }).catch((res) => {
+                console.log(res)
+                this.setState({json: res})
+            });
+        }
+    }
+    changeMail = (email) => {
+        this.data.email = email;
+    }
+    changePass = (pass) => {
+        this.data.password = pass;
+    }
+
     render(){
         return(
 
-           <View style={styles.container}>
-              <ImageBackground source={require('../assets/background.png')} style={styles.backgroundImage}>
-                <View style={styles.content}>
-                 <View style={styles.logoContainer}>
-                     <Image
-                     style={styles.logo}
-                     source={require('../assets/logo.png')}/>
-                     <Text style={styles.title}>Welcome to my world of movies!</Text>
-                 </View>
+            <View style={styles.container}>
+                <ImageBackground source={require('../assets/background.png')} style={styles.backgroundImage}>
+                    <View style={styles.content}>
+                        <View style={styles.logoContainer}>
+                            <Image
+                                style={styles.logo}
+                                source={require('../assets/logo.png')}/>
+                            <Text style={styles.title}>Welcome to my world of movies!</Text>
+                        </View>
 
-                 <View style={styles.inputContainer}>
-                     <TextInput underlineColorAndroid='transparent' style={styles.input}
-    placeholder='Username'/>
-                         <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
-                     placeholder='Password'/>
+                        <View style={styles.inputContainer}>
+                            <TextInput onChangeText={this.changeMail} underlineColorAndroid='transparent' style={styles.input}
+                                       placeholder='Email Address'/>
+                            <TextInput onChangeText={this.changePass} secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
+                                       placeholder='Password'/>
 
+                            <Text>{JSON.stringify(this.state.json)}</Text>
 
-
-                  </View>
-                  <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
-                         <Text style={styles.buttonText}>LOGIN</Text>
-                     </TouchableOpacity>
-                </View>
-             </ImageBackground>
-        </View>
+                        </View>
+                        <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
+                            <Text style={styles.buttonText}>LOGIN</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ImageBackground>
+            </View>
 
 
 
@@ -54,13 +107,13 @@ const styles = StyleSheet.create({
     },
 
     content:{
-      alignItems: 'center'
+        alignItems: 'center'
     },
 
     logoContainer:{
-      alignItems: 'center',
-      flexGrow: 1,
-      justifyContent: 'center',
+        alignItems: 'center',
+        flexGrow: 1,
+        justifyContent: 'center',
     },
     logo: {
         width: 170,
@@ -69,9 +122,9 @@ const styles = StyleSheet.create({
 
     },
     title: {
-      color: '#fff',
-      marginTop: 10,
-      marginBottom: 20
+        color: '#fff',
+        marginTop: 10,
+        marginBottom: 20
     },
 
     inputContainer:{
