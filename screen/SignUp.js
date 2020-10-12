@@ -20,7 +20,7 @@ export default class SignUp extends React.Component {
                             <TextInput underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Username'/>
                             <TextInput underlineColorAndroid='transparent' style={styles.input}
-                                       placeholder='Emial'/>
+                                       placeholder='Email'/>
                             <TextInput underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Password'/>
                             <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}

@@ -1,37 +1,53 @@
 import React from 'react';
 
 import {StyleSheet, Text, View, TextInput, TouchableOpacity,Image,ImageBackground} from 'react-native';
-
+import axios from "axios";
 
 export default class SignIn extends React.Component {
+    data ={email: '', password: ''}
+    login = () => {
+        if (this.data.email !== "" && this.data.password !== "") {
+            axios.post('https://sagejava.appspot.com/rest/services/login', this.data).then((res) => {
+                console.log(res)
+            });
+        }
+    }
+    changeMail = (email) => {
+        this.data.email = email;
+    }
+    changePass = (pass) => {
+        this.data.password = pass;
+    }
+
     render(){
         return(
 
-           <View style={styles.container}>
-              <ImageBackground source={require('../assets/background.png')} style={styles.backgroundImage}>
-                <View style={styles.content}>
-                 <View style={styles.logoContainer}>
-                     <Image
-                     style={styles.logo}
-                     source={require('../assets/logo.png')}/>
-                     <Text style={styles.title}>Welcome to my world of movies!</Text>
-                 </View>
+            <View style={styles.container}>
+                <ImageBackground source={require('../assets/background.png')} style={styles.backgroundImage}>
+                    <View style={styles.content}>
+                        <View style={styles.logoContainer}>
+                            <Image
+                                style={styles.logo}
+                                source={require('../assets/logo.png')}/>
+                            <Text style={styles.title}>Welcome to my world of movies!</Text>
+                        </View>
 
-                 <View style={styles.inputContainer}>
-                     <TextInput underlineColorAndroid='transparent' style={styles.input}
-    placeholder='Username'/>
-                         <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
-                     placeholder='Password'/>
+                        <View style={styles.inputContainer}>
+                            <TextInput onChangeText={this.changeMail} underlineColorAndroid='transparent' style={styles.input}
+                                       placeholder='Email Address'/>
+                            <TextInput onChangeText={this.changePass} secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
+                                       placeholder='Password'/>
 
 
 
-                  </View>
-                  <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
-                         <Text style={styles.buttonText}>LOGIN</Text>
-                     </TouchableOpacity>
-                </View>
-             </ImageBackground>
-        </View>
+                        </View>
+                        <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
+                            <Text style={styles.buttonText}>LOGIN</Text>
+                        </TouchableOpacity>
+                        Alert.alert("Logged in successfully");
+                    </View>
+                </ImageBackground>
+            </View>
 
 
 
@@ -54,13 +70,13 @@ const styles = StyleSheet.create({
     },
 
     content:{
-      alignItems: 'center'
+        alignItems: 'center'
     },
 
     logoContainer:{
-      alignItems: 'center',
-      flexGrow: 1,
-      justifyContent: 'center',
+        alignItems: 'center',
+        flexGrow: 1,
+        justifyContent: 'center',
     },
     logo: {
         width: 170,
@@ -69,9 +85,9 @@ const styles = StyleSheet.create({
 
     },
     title: {
-      color: '#fff',
-      marginTop: 10,
-      marginBottom: 20
+        color: '#fff',
+        marginTop: 10,
+        marginBottom: 20
     },
 
     inputContainer:{
