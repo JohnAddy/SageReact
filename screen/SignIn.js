@@ -7,8 +7,11 @@ export default class SignIn extends React.Component {
     state = {
         json: {}
     }
+    sandbox = false;
+    uris = {dev: 'http://localhost:8080/', main: 'https://sageproject.appspot.com/'}
     data ={email: '', password: ''}
-    /*login = (e) => {
+    login = (e) => {
+        const {dev, main} = this.uris;
         this.setState({json:this.data});
         e.preventDefault();
         if (this.data.email !== "" && this.data.password !== "") {
@@ -16,17 +19,24 @@ export default class SignIn extends React.Component {
                  headers: {
                      'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                baseURL: 'https://sageproject.appspot.com/'
-            })
-            fetch.post('rest/services/login', this.data).then((res) => {
+                baseURL: (this.sandbox) ? dev : main
+            });
+            const params = new URLSearchParams();
+            for (const one in this.data) {
+                if (this.data.hasOwnProperty(one)) {
+                    params.append(one, this.data[one]);
+                }
+            }
+            fetch.post('rest/services/login', params).then((res) => {
                 this.setState({json:res})
             }).catch((res) => {
                 console.log(res)
                 this.setState({json:res})
             });
         }
-    }*/
-    login = (e) => {
+    }
+    /*login = (e) => {
+        e.preventDefault();
         if (this.data.email !== "" && this.data.password !== "") {
             const params = this.data, formData = new FormData();
 
@@ -42,14 +52,15 @@ export default class SignIn extends React.Component {
                 body: formData
             };
 
-            fetch('https://sageproject.appspot.com/rest/services/login', request).then((res) => {
+//            fetch('https://sageproject.appspot.com/rest/services/login', request).then((res) => {
+        fetch('http://localhost:8080/rest/services/login', request).then((res) => {
                 this.setState({json: res})
             }).catch((res) => {
                 console.log(res)
                 this.setState({json: res})
             });
         }
-    }
+    }*/
     changeMail = (email) => {
         this.data.email = email;
     }
