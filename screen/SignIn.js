@@ -2,36 +2,37 @@ import React from 'react';
 
 import {StyleSheet, Text, View, TextInput, TouchableOpacity,Image,ImageBackground} from 'react-native';
 import axios from "axios";
+import Api from "./Api";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default class SignIn extends React.Component {
     state = {
         json: {}
     }
-    sandbox = false;
-    uris = {dev: 'http://localhost:8080/', main: 'https://sageproject.appspot.com/'}
+    access;
+    constructor(props) {
+        super(props);
+        this.access=new Api();
+    }
     data ={email: '', password: ''}
     login = (e) => {
-        const {dev, main} = this.uris;
-        this.setState({json:this.data});
         e.preventDefault();
-        if (this.data.email !== "" && this.data.password !== "") {
-            const fetch = axios.create({
-                 headers: {
-                     'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                baseURL: (this.sandbox) ? dev : main
-            });
-            const params = new URLSearchParams();
-            for (const one in this.data) {
-                if (this.data.hasOwnProperty(one)) {
-                    params.append(one, this.data[one]);
+        const {email, password} = this.data;
+        if (email !== "" && password !== "") {
+            this.access.post("login", {email, password}).then(async (res) => {
+                const {result} = res;
+                if (result && result.hasOwnProperty('token')) {
+                    if (result.token !== '') {
+                        for (const key in result) {
+                            if (result.hasOwnProperty(key)) {
+                                const  value = result[key];
+                                if (value) {
+                                    await AsyncStorage.setItem(key, value);
+                                }
+                            }
+                        }
+                    }
                 }
-            }
-            fetch.post('rest/services/login', params).then((res) => {
-                this.setState({json:res})
-            }).catch((res) => {
-                console.log(res)
-                this.setState({json:res})
             });
         }
     }
