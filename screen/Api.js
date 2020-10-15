@@ -5,7 +5,7 @@ export default class Api {
     sandbox;
     access;
 
-    constructor(sandbox = false) {
+    constructor(sandbox = true) {
         this.sandbox = sandbox;
         this.access = axios.create({
             headers: {
@@ -28,11 +28,12 @@ export default class Api {
     }
 
     async request(path, datas, type){
-       const params = this.params(datas)
         if (type==="post") {
-            return await this.access.post(path, params)
+            const params = this.params(datas)
+            return this.access.post(path, params);
         }
-        return await this.access.get(path, params)
+        console.log(path, datas)
+        return await this.access.get(path, datas);
     }
 
     async get(path, datas){
@@ -41,13 +42,13 @@ export default class Api {
         }).catch((res) => {
             return {result: res.data}
         });
-
     }
 
     async post(path, datas){
         return await this.request(path, datas, "post").then((res) => {
             return {result: res.data}
         }).catch((res) => {
+            console.log(res.data);
             return {result: res.data}
         });
 

@@ -44,8 +44,11 @@ class Splash extends React.Component {
         const userToken = await AsyncStorage.getItem('token');
         let bol = false;
         if (userToken !== "") {
-            const user = await this.access.post('check', {'token': userToken}).then((res) => {return res;});
-            bol = (user !== null && user !== undefined && user.hasOwnProperty('token') && user.token !== '');
+            const user = await this.access.post('check', {'token': userToken}).then((res) => {return res.result;}).catch(err =>{
+                console.log(err)
+                return undefined;
+            });
+             bol = (user !== undefined && user.hasOwnProperty('token') && user.token !== '' && user.token === userToken);
         }
 
         // This will switch to the App screen or Auth screen and this loading

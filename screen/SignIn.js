@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export default class SignIn extends React.Component {
     state = {
-        json: {}
+        success: false
     }
     access;
     constructor(props) {
@@ -23,6 +23,7 @@ export default class SignIn extends React.Component {
                 const {result} = res;
                 if (result && result.hasOwnProperty('token')) {
                     if (result.token !== '') {
+                        this.setState({success: true});
                         for (const key in result) {
                             if (result.hasOwnProperty(key)) {
                                 const  value = result[key];
@@ -33,6 +34,10 @@ export default class SignIn extends React.Component {
                         }
                     }
                 }
+                console.log(this.state)
+                await this.props.navigation.navigate(!this.state.success ? 'App' : 'Auth');
+            }).catch( (err) =>{
+                console.log(err);
             });
         }
     }
@@ -87,8 +92,6 @@ export default class SignIn extends React.Component {
                                        placeholder='Email Address'/>
                             <TextInput onChangeText={this.changePass} secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Password'/>
-
-                            <Text>{JSON.stringify(this.state.json)}</Text>
 
                         </View>
                         <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>

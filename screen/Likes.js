@@ -8,7 +8,7 @@ class Likes extends React.Component{
     render() {
         return(
             <View>
-                <Text>Welcome to Likes!!!</Text>
+                <Text>Welcome to Likes!</Text>
             </View>
         );
     }
