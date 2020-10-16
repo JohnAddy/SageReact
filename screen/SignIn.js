@@ -20,9 +20,10 @@ export default class SignIn extends React.Component {
         const {email, password} = this.data;
         if (email !== "" && password !== "") {
             this.access.post("login", {email, password}).then(async (res) => {
-                const {result} = res;
+                let {result} = res,bol = false;
                 if (result && result.hasOwnProperty('token')) {
                     if (result.token !== '') {
+                        bol=true;
                         this.setState({success: true});
                         for (const key in result) {
                             if (result.hasOwnProperty(key)) {
@@ -34,8 +35,10 @@ export default class SignIn extends React.Component {
                         }
                     }
                 }
-                console.log(this.state)
-                await this.props.navigation.navigate(!this.state.success ? 'App' : 'Auth');
+                //console.log(this.state)
+               if(bol){
+                   await this.props.navigation.navigate('App');
+               }
             }).catch( (err) =>{
                 console.log(err);
             });
@@ -105,13 +108,17 @@ export default class SignIn extends React.Component {
 
         );
     }
-
+      /*async componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log(this.state);
+          if (this.state.success) {
+              await this.props.navigation.navigate('App');
+          }
+      }*/
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
 
     },
     backgroundImage: {
@@ -133,7 +140,6 @@ const styles = StyleSheet.create({
     logo: {
         width: 170,
         height: 120
-
 
     },
     title: {
