@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
 import {Button, Image, ImageBackground, Text, View} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
+
 import axios from "axios";
 import Api from "./Api";
-import FlatList from "react-native-web";
+
+import {MovieDetails, MovieList} from "./helper";
+import FlatList, {TouchableOpacity} from "react-native-web";
+
 
 class Movies extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             movies: [],
-            page: 1
+            page: 1,
+            selected: undefined
         };
         this.access=new Api();
     }
@@ -30,46 +35,40 @@ class Movies extends React.Component{
 
           const uri= await AsyncStorage.getItem('uri');
           const  poster= await AsyncStorage.getItem('posterSize');
-           this.setState({movies: movies.result ?? [], uri,poster});
+          const  backdrop= await AsyncStorage.getItem('backdropSize');
+          console.log(poster, uri, backdrop)
+           this.setState({movies: movies.result ?? [], uri,poster, backdrop});
        }
+
     }
 
-    detailHandler=()=> {
-      return console.log('movie clicked')
-            }
+    moviesSelect = (id) => {
+        const movie = this.state.movies.find((mov) => mov.id === id);
+        if (movie) {
+            this.setState({selected: movie});
+        }
+    }
 
+    backMethod = () =>{
+        if(this.state.selected !== null){
+            this.setState({selected: undefined})
+        }
+    }
 
     render() {
-        const {movies,uri,poster} = this.state,path = `${uri}${poster}`;
+        const { navigate } = this.props.navigation;
+        const {movies,uri,poster, selected} = this.state,path = `${uri}${poster}`;
         console.log(movies);
+
         return(
-            /*(movies.length>0)?
-                <View>
-                    {movies.map(mov=>(
-                      <Text key={mov.key}>{mov.title}</Text>
-                    ))}
-                </View>
-                :
-                <View>
-                  <Text> Welcome to Movies</Text>
-
-                </View>
-
-*/
-
+            (selected) ? <MovieDetails movie={selected} backMethod={this.backMethod} path={path}/> :
             (movies.length>0)?
 
-                (movies.map(mov=>(
-            <View key={mov.id}style={{flexDirection: 'row', textAlign: 'left', fontSize: 15, backgroundColor:'grey'}}>
-                <Image source={{uri: path+ mov.poster_path}} style={{width: 70, height: 100, display:'block'}}onPress={this.detailHandler} />
-                <Text style={{ backgroundColor:'lightblue', alignSelf: "center",display:'block',padding:5}}>{mov.title}</Text>
-            </View>
-                    )))
+                <MovieList movies={movies} path={path} method={this.moviesSelect}/>
+
                 :''
         )
     }
 
 }
 export default Movies;
-
-

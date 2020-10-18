@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
 import SageNavigation from './navigation/SageNavigation';
-import SignIn from "./screen/SignIn";
-import View from "react-native-web";
+
+import MovieDetails from "./screen/helper";
+
 
 export default function App(){
 
     return(
-        <SageNavigation />
-        );
-
-
+        <React.Fragment>
+            <SageNavigation />
+        </React.Fragment>
+    );
 }

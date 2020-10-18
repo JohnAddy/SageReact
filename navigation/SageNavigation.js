@@ -18,7 +18,6 @@ const SageNavigation = createDrawerNavigator({
     });
 export default createAppContainer(SageNavigation);*/
 import { createSwitchNavigator } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
 import Welcome from "../screen/Welcome";
 import SignIn from "../screen/SignIn";
 import SignUp from "../screen/SignUp";
@@ -27,6 +26,8 @@ import { createAppContainer } from 'react-navigation';
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import Movies from "../screen/Movies";
 import Likes from "../screen/Likes";
+import MovieDetails from "../screen/helper";
+import {createStackNavigator} from "react-navigation-stack";
 // Implementation of HomeScreen, OtherScreen, SignInScreen, AuthLoadingScreen
 // goes here.
 
@@ -34,14 +35,20 @@ import Likes from "../screen/Likes";
 const AuthStack = createStackNavigator({ SignIn: SignIn, SignUp: SignUp });*/
 const AppDrawer = createDrawerNavigator({ Home: Welcome, Movies: Movies, Likes: Likes });
 const AuthDrawer = createDrawerNavigator({ SignIn: SignIn, SignUp: SignUp });
+// const AppPages = createStackNavigator({Movies:{screen:Movies}, Details:{screen:MovieDetails}})
 
-export default createAppContainer(createSwitchNavigator(
+const AppSwitch = createSwitchNavigator(
     {
         AuthLoading: Splash,
         App: AppDrawer,
         Auth: AuthDrawer,
     },
+
     {
         initialRouteName: 'AuthLoading',
     }
-));
+)
+
+export default createAppContainer(AppSwitch);
+
+
