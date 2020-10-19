@@ -61,7 +61,7 @@ class Movies extends React.Component{
         console.log(movies);
 
         return(
-            (selected) ? <MovieDetails movie={selected} backMethod={this.backMethod} path={path}/> :
+            (selected) ? <MovieDetails movie={selected} backMethod={this.backMethod} path={path} /> :
             (movies.length>0)?
 
                 <MovieList movies={movies} path={path} method={this.moviesSelect}/>

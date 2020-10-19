@@ -3,7 +3,7 @@ import {View, Text, Button, TouchableOpacity} from "react-native-web";
 import {Image} from "react-native";
 
 
-export const MovieDetails = ({path, movie, addRemoveMethod, backMethod, own = false}) => {
+export const MovieDetails = ({path, movie, addMethod, backMethod, own = false}) => {
     //console.log(movie)
     return(
         <View>
@@ -13,6 +13,8 @@ export const MovieDetails = ({path, movie, addRemoveMethod, backMethod, own = fa
             <Text>{movie.release_date}</Text>
 
             <Button onPress={backMethod}>Back</Button>
+            <Button onPress={addMethod}>Like</Button>
+
         </View>
     )
 },
