@@ -1,13 +1,13 @@
 import React from 'react';
 
-import {StyleSheet, Text, View, TextInput, TouchableOpacity,Image,ImageBackground} from 'react-native';
+import {StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ImageBackground, Button} from 'react-native';
 import axios from "axios";
 import Api from "./Api";
 import AsyncStorage from "@react-native-community/async-storage";
 
 export default class SignIn extends React.Component {
     state = {
-        success: false
+        success: false,
     }
     access;
     constructor(props) {
@@ -19,8 +19,12 @@ export default class SignIn extends React.Component {
         e.preventDefault();
         const {email, password} = this.data;
         if (email !== "" && password !== "") {
+
             this.access.post("login", {email, password}).then(async (res) => {
-                let {result} = res,bol = false;
+                const user = ''
+                await AsyncStorage.setItem(res.username, user);
+
+                let {result} = res, bol = false;
                 if (result && result.hasOwnProperty('token')) {
                     if (result.token !== '') {
                         bol=true;
@@ -36,9 +40,9 @@ export default class SignIn extends React.Component {
                     }
                 }
                 //console.log(this.state)
-               if(bol){
-                   await this.props.navigation.navigate('App');
-               }
+                if(bol){
+                    await this.props.navigation.navigate('App');
+                }
             }).catch( (err) =>{
                 console.log(err);
             });
@@ -101,6 +105,18 @@ export default class SignIn extends React.Component {
                             <Text style={styles.buttonText}>LOGIN</Text>
                         </TouchableOpacity>
                     </View>
+
+                    <View style={styles.signupTextCont}>
+                        <Text style={styles.signupText}>Don't have an account yet?</Text>
+                        <View style={styles.signinButton}>
+                            <Button
+                                title="Sign Up"
+                                onPress={() =>
+                                    this.props.navigation.navigate('SignUp')
+                                }
+                            /></View>
+                    </View>
+
                 </ImageBackground>
             </View>
 
@@ -108,12 +124,12 @@ export default class SignIn extends React.Component {
 
         );
     }
-      /*async componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.state);
-          if (this.state.success) {
-              await this.props.navigation.navigate('App');
-          }
-      }*/
+    /*async componentDidUpdate(prevProps, prevState, snapshot) {
+      console.log(this.state);
+        if (this.state.success) {
+            await this.props.navigation.navigate('App');
+        }
+    }*/
 }
 
 const styles = StyleSheet.create({
@@ -127,20 +143,19 @@ const styles = StyleSheet.create({
         width: null,
         justifyContent: 'center'
     },
-
-    content:{
-        alignItems: 'center'
+    content: {
+        alignItems: 'center',
+        marginTop: 40,
     },
-
-    logoContainer:{
+    logoContainer: {
         alignItems: 'center',
         flexGrow: 1,
         justifyContent: 'center',
+        marginTop: 20,
     },
     logo: {
         width: 170,
         height: 120
-
     },
     title: {
         color: '#fff',
@@ -176,10 +191,26 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 16,
-
         textAlign: 'center',
+    },
+
+    signupTextCont: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    signupText: {
+
+        color: '#ffffff',
+        fontSize:15,
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 15,
+    },
+    signinButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        display: 'block',
     }
-
-
-
 });

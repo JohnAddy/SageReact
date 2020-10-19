@@ -1,26 +1,27 @@
 import React from 'react';
 
-import {StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ImageBackground} from 'react-native';
+import {StyleSheet, Text, View, Button, TextInput, TouchableOpacity, Image, ImageBackground} from 'react-native';
+import SafeAreaView from "react-native-web/dist/exports/SafeAreaView";
 
 
 export default class SignUp extends React.Component {
     render() {
         return (
-            <View style={styles.signing}>
+            <SafeAreaView style={styles.signing}>
                 <ImageBackground source={require('../assets/background.png')} style={styles.backgroundImage}>
                     <View style={styles.content}>
                         <View style={styles.logoContainer}>
                             <Image
                                 style={styles.logo}
                                 source={require('../assets/logo.png')}/>
-                            <Text style={styles.title}>Please Fill in the Info!</Text>
+                            <Text style={styles.title}>Please Fill in the Information!</Text>
                         </View>
 
                         <View style={styles.inputContainer}>
                             <TextInput underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Username'/>
                             <TextInput underlineColorAndroid='transparent' style={styles.input}
-                                       placeholder='Emial'/>
+                                       placeholder='Email'/>
                             <TextInput underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Password'/>
                             <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
@@ -32,11 +33,22 @@ export default class SignUp extends React.Component {
                         <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
                             <Text style={styles.buttonText}>SignUp</Text>
                         </TouchableOpacity>
+
                     </View>
+
+                    <View style={styles.signupTextCont}>
+                        <Text style={styles.signupText}>Do you have an account already?</Text>
+                        <View style={styles.signinButton}>
+                            <Button
+                                title="Sign In"
+                                onPress={() =>
+                                    this.props.navigation.navigate('SignIn')
+                                }
+                            /></View>
+                    </View>
+
                 </ImageBackground>
-            </View>
-
-
+            </SafeAreaView>
         );
     }
 
@@ -50,16 +62,18 @@ const styles = StyleSheet.create({
         flex: 1,
         alignSelf: 'stretch',
         width: null,
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
 
     content: {
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 40,
     },
     logoContainer: {
         alignItems: 'center',
         flexGrow: 1,
         justifyContent: 'center',
+        marginTop: 20,
     },
     logo: {
         width: 170,
@@ -97,7 +111,24 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         textAlign: 'center',
+    },
+    signupTextCont: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    signupText: {
+        marginTop: -50,
+        color: '#ffffff',
+        fontSize:15,
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 15,
+    },
+    signinButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        display: 'block',
     }
-
-
 });

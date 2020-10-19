@@ -26,14 +26,9 @@ import { createAppContainer } from 'react-navigation';
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import Movies from "../screen/Movies";
 import Likes from "../screen/Likes";
-import MovieDetails from "../screen/helper";
-import {createStackNavigator} from "react-navigation-stack";
-// Implementation of HomeScreen, OtherScreen, SignInScreen, AuthLoadingScreen
-// goes here.
+import Logout from "../screen/Logout";
 
-/*const AppStack = createStackNavigator({ Home: Welcome, Movie: Movie });
-const AuthStack = createStackNavigator({ SignIn: SignIn, SignUp: SignUp });*/
-const AppDrawer = createDrawerNavigator({ Home: Welcome, Movies: Movies, Likes: Likes });
+const AppDrawer = createDrawerNavigator({ Home: Welcome, Movies, Likes, Logout });
 const AuthDrawer = createDrawerNavigator({ SignIn: SignIn, SignUp: SignUp });
 // const AppPages = createStackNavigator({Movies:{screen:Movies}, Details:{screen:MovieDetails}})
 

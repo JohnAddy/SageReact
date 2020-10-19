@@ -26,7 +26,6 @@ import {
     View,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
-import axios from "axios";
 import Api from "./Api";
 
 class Splash extends React.Component {

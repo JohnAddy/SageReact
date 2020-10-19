@@ -1,12 +1,12 @@
 import React,{Component} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity,Image,ImageBackground, Button} from 'react-native';
+import AsyncStorage from "@react-native-community/async-storage"
 
 
 export default class Welcome extends Component
-
 {
-    render(){
 
+    render(){
         const { navigate } = this.props.navigation;
         return(
 
