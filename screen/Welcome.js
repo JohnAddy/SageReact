@@ -5,13 +5,25 @@ import AsyncStorage from "@react-native-community/async-storage"
 
 export default class Welcome extends Component
 {
+    state = {
+        user: ''
+    }
 
+    async componentDidMount(){
+        const user = await AsyncStorage.getItem('user');
+        if (user){
+            this.setState({user:user})
+        }
+        console.log(user)
+
+    }
     render(){
+       const { user } = this.state;
         const { navigate } = this.props.navigation;
         return(
 
             <View style={styles.inner}>
-                <Text>Welcome to my movie world!</Text>
+                <Text>{`You are logged in as ${user}`}</Text>
             </View>
 
         );

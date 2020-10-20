@@ -21,8 +21,6 @@ export default class SignIn extends React.Component {
         if (email !== "" && password !== "") {
 
             this.access.post("login", {email, password}).then(async (res) => {
-                const user = ''
-                await AsyncStorage.setItem(res.username, user);
 
                 let {result} = res, bol = false;
                 if (result && result.hasOwnProperty('token')) {
@@ -74,6 +72,10 @@ export default class SignIn extends React.Component {
             });
         }
     }*/
+    async componentDidMount(){
+        const loguser = '';
+        await AsyncStorage.setItem(loguser, this.data.email)
+    }
     changeMail = (email) => {
         this.data.email = email;
     }
