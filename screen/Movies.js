@@ -10,36 +10,36 @@ import FlatList, {TouchableOpacity} from "react-native-web";
 
 
 class Movies extends React.Component{
+
+    token;
+
     constructor(props) {
         super(props);
         this.state = {
             movies: [],
             page: 1,
+            bol: false,
             selected: undefined
         };
         this.access=new Api();
     }
 
     async componentDidMount() {
-        const token = await AsyncStorage.getItem('token') ?? '', movies = await this.access.get('movies/' + this.state.page + '/' + token)
-           /* .then( async (res) =>{
-               // console.log(res);
-                return await res.result;
-            })
-            .catch((err) => {
-            console.log(err);
-            return[];
-        });*/
+        this.token = await AsyncStorage.getItem('token') ?? '';
+        this.uri = await AsyncStorage.getItem('uri');
+        this.poster= await AsyncStorage.getItem('posterSize');
+        this.backdrop= await AsyncStorage.getItem('backdropSize');
 
-       if(movies.result && movies.result.length > 0){
+        await this.fetch();
+    }
 
-          const uri= await AsyncStorage.getItem('uri');
-          const  poster= await AsyncStorage.getItem('posterSize');
-          const  backdrop= await AsyncStorage.getItem('backdropSize');
-          console.log(poster, uri, backdrop)
-           this.setState({movies: movies.result ?? [], uri,poster, backdrop});
-       }
-
+    async fetch(page = 1) {
+        const movies = await this.access.get('movies/' + page + '/' + this.token);
+        if(movies.result && movies.result.length > 0){
+            console.log(movies.result)
+            const temps = this.state.movies;
+            this.setState({movies: [...temps, ...movies.result ?? []], page});
+        }
     }
 
     moviesSelect = (id) => {
@@ -55,22 +55,31 @@ class Movies extends React.Component{
         }
     }
 
-    manage = (movie) => {
-        console.log(movie)
+    manage = (id) => {
+
+    }
+
+    more = (len) => {
+        let {page} = this.state;
+        page = page + 1;
+        if (page > 5) {
+            this.setState({bol: true});
+        } else {
+            this.fetch(page).then();
+        }
     }
 
     render() {
         const { navigate } = this.props.navigation;
-        const {movies,uri,poster, selected} = this.state,path = `${uri}${poster}`;
+        const {movies, selected, bol} = this.state,path = `${this.uri}${this.poster}`;
         //console.log(movies);
 
         return(
             (selected) ? <MovieDetails movie={selected} addRemoveMethod={this.manage} backMethod={this.backMethod} path={path} /> :
-            (movies.length>0)?
+                (movies.length>0)?
 
-                <MovieList movies={movies} path={path} method={this.moviesSelect}/>
-
-                :''
+                    <MovieList movies={movies} path={path} bol={bol} more={this.more} method={this.moviesSelect}/>
+                    :''
         )
     }
 

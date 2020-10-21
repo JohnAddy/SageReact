@@ -37,7 +37,7 @@ export default class SignIn extends React.Component {
                         }
                     }
                 }
-                //console.log(this.state)
+
                 if(bol){
                     await this.props.navigation.navigate('App');
                 }
