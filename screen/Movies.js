@@ -55,13 +55,17 @@ class Movies extends React.Component{
         }
     }
 
+    manage = (movie) => {
+        console.log(movie)
+    }
+
     render() {
         const { navigate } = this.props.navigation;
         const {movies,uri,poster, selected} = this.state,path = `${uri}${poster}`;
-        console.log(movies);
+        //console.log(movies);
 
         return(
-            (selected) ? <MovieDetails movie={selected} backMethod={this.backMethod} path={path} /> :
+            (selected) ? <MovieDetails movie={selected} addRemoveMethod={this.manage} backMethod={this.backMethod} path={path} /> :
             (movies.length>0)?
 
                 <MovieList movies={movies} path={path} method={this.moviesSelect}/>

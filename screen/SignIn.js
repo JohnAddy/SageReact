@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ImageBackground, Button} from 'react-native';
 import axios from "axios";
 import Api from "./Api";
@@ -27,6 +26,7 @@ export default class SignIn extends React.Component {
                     if (result.token !== '') {
                         bol=true;
                         this.setState({success: true});
+
                         for (const key in result) {
                             if (result.hasOwnProperty(key)) {
                                 const  value = result[key];
@@ -72,10 +72,13 @@ export default class SignIn extends React.Component {
             });
         }
     }*/
-    async componentDidMount(){
-        const loguser = '';
-        await AsyncStorage.setItem(loguser, this.data.email)
+    async storeUser(){
+        const user = ''
+        if(this.state.loguser !== null){
+            await AsyncStorage(user, this.state.loguser)
+        }
     }
+
     changeMail = (email) => {
         this.data.email = email;
     }

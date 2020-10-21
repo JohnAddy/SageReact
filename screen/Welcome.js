@@ -10,11 +10,11 @@ export default class Welcome extends Component
     }
 
     async componentDidMount(){
-        const user = await AsyncStorage.getItem('user');
+        const user = await AsyncStorage.getItem('email');
         if (user){
             this.setState({user:user})
         }
-        console.log(user)
+        console.log(this.state.user)
 
     }
     render(){
