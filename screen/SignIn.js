@@ -216,6 +216,6 @@ const styles = StyleSheet.create({
     signinButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        display: 'block',
+        display: '',
     }
 });

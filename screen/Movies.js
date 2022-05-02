@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {Button, Image, ImageBackground, Text, View} from "react-native";
+import {Button, Image, ImageBackground, StyleSheet, Text, View} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 
 import axios from "axios";
@@ -11,7 +11,13 @@ import FlatList, {TouchableOpacity} from "react-native-web";
 
 class Movies extends React.Component{
 
+    static movies = [];
+
     token;
+
+    title = 'Movies List';
+
+    path = 'movies';
 
     constructor(props) {
         super(props);
@@ -29,12 +35,11 @@ class Movies extends React.Component{
         this.uri = await AsyncStorage.getItem('uri');
         this.poster= await AsyncStorage.getItem('posterSize');
         this.backdrop= await AsyncStorage.getItem('backdropSize');
-
         await this.fetch();
     }
 
     async fetch(page = 1) {
-        const movies = await this.access.get('movies/' + page + '/' + this.token);
+        const movies = await this.access.get(this.path + '/' + page + '/' + this.token);
         if(movies.result && movies.result.length > 0){
             console.log(movies.result)
             const temps = this.state.movies;
@@ -50,19 +55,52 @@ class Movies extends React.Component{
     }
 
     backMethod = () =>{
-        if(this.state.selected !== null){
-            this.setState({selected: undefined})
+        const {selected} = this.state;
+        if(selected){
+            if (this.path === 'movies') {
+                this.setState({selected: undefined});
+            } else {
+                this.clean(selected);
+            }
         }
     }
 
     manage = (id) => {
+        if (id > 0) {
+            const {selected} = this.state;
+            if (selected && selected.key === id) {
+                this.change(selected).then();
+            }
+        }
+    }
 
+    clean(movie) {}
+
+    async change(movie) {
+        if (movie.own) {
+            //remove
+            if (await this.access.delete('remove/' + this.token+ '/' + movie.key)) {
+                movie.own = false;
+                if (this.path === ' movies') {
+                    Movies.movies = Movies.movies.filter((m) => m.key !== movie.key);
+                }
+            }
+        } else {
+            //add
+            if (await this.access.post('add', {token: this.token, id: movie.key})) {
+                movie.own = true;
+                if (this.path === ' movies') {
+                    Movies.movies.push(movie);
+                }
+            }
+        }
+        this.setState({movie});
     }
 
     more = (len) => {
         let {page} = this.state;
         page = page + 1;
-        if (page > 5) {
+        if (page > 3) {
             this.setState({bol: true});
         } else {
             this.fetch(page).then();
@@ -71,17 +109,17 @@ class Movies extends React.Component{
 
     render() {
         const { navigate } = this.props.navigation;
-        const {movies, selected, bol} = this.state,path = `${this.uri}${this.poster}`;
-        //console.log(movies);
+        const {movies, selected, bol} = this.state,path = `${this.uri}${this.poster}`,path2 = `${this.uri}${this.backdrop}`;
 
         return(
-            (selected) ? <MovieDetails movie={selected} addRemoveMethod={this.manage} backMethod={this.backMethod} path={path} /> :
+            (selected) ? <MovieDetails  title={this.title} movie={selected} addRemoveMethod={this.manage} backMethod={this.backMethod} path={path2} /> :
                 (movies.length>0)?
-
-                    <MovieList movies={movies} path={path} bol={bol} more={this.more} method={this.moviesSelect}/>
+                    <MovieList title={this.title} movies={movies} path={path} bol={bol} more={this.more} method={this.moviesSelect}/>
                     :''
         )
     }
 
 }
+
+
 export default Movies;

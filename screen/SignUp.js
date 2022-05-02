@@ -2,10 +2,56 @@ import React from 'react';
 
 import {StyleSheet, Text, View, Button, TextInput, TouchableOpacity, Image, ImageBackground} from 'react-native';
 import SafeAreaView from "react-native-web/dist/exports/SafeAreaView";
+import AsyncStorage from "@react-native-community/async-storage";
+import Api from "./Api";
 
 
 export default class SignUp extends React.Component {
+
+    state = {success: false}
+
+    data ={email: '', password: '', password2: '', username: ''}
+
+    constructor(props) {
+        super(props);
+        this.access=new Api();
+    }
+
+    changeMail = (email) => {
+        this.data.email = email;
+    }
+
+    changePass = (pass) => {
+        this.data.password = pass;
+    }
+
+    changePass2 = (pass) => {
+        this.data.password2 = pass;
+    }
+
+    changeUsername = (name) => {
+        this.data.username = name;
+    }
+
+    sign = (e) => {
+        e.preventDefault();
+        const {email, password, password2, username} = this.data;
+        if (email !== "" && password !== "" && password2 !== '' && password2 === password && username !== '') {
+
+            this.access.post("signup", {email, password, username}).then(async (res) => {
+
+                let {result} = res;
+                if (result || result === 'true') {
+                    this.setState({success: true});
+                }
+            }).catch( (err) =>{
+                console.log(err);
+            });
+        }
+    }
+
     render() {
+        const {success} = this.state;
         return (
             <SafeAreaView style={styles.signing}>
                 <ImageBackground source={require('../assets/background.png')} style={styles.backgroundImage}>
@@ -18,24 +64,24 @@ export default class SignUp extends React.Component {
                         </View>
 
                         <View style={styles.inputContainer}>
-                            <TextInput underlineColorAndroid='transparent' style={styles.input}
+                            <TextInput onChangeText={this.changeUsername} underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Username'/>
-                            <TextInput underlineColorAndroid='transparent' style={styles.input}
+                            <TextInput onChangeText={this.changeMail} underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Email'/>
-                            <TextInput underlineColorAndroid='transparent' style={styles.input}
+                            <TextInput onChangeText={this.changePass} secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Password'/>
-                            <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
+                            <TextInput onChangeText={this.changePass2} secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Confirm Password'>
 
                             </TextInput>
 
                         </View>
-                        <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
+                        <TouchableOpacity onPress={this.sign} style={styles.buttonContainer}>
                             <Text style={styles.buttonText}>SignUp</Text>
                         </TouchableOpacity>
 
                     </View>
-
+                    {(success) ? <View><Text>{'Signup Successful, click signin below.'}</Text></View> : <Text/>}
                     <View style={styles.signupTextCont}>
                         <Text style={styles.signupText}>Do you have an account already?</Text>
                         <View style={styles.signinButton}>
