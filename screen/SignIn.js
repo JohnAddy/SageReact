@@ -1,37 +1,48 @@
 import React from 'react';
-
-import {StyleSheet, Text, View, TextInput, TouchableOpacity,Image,ImageBackground} from 'react-native';
+import {StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ImageBackground, Button} from 'react-native';
 import axios from "axios";
+import Api from "./Api";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default class SignIn extends React.Component {
     state = {
-        json: {}
+        success: false,
     }
-    sandbox = false;
-    uris = {dev: 'http://localhost:8080/', main: 'https://sageproject.appspot.com/'}
+    access;
+    constructor(props) {
+        super(props);
+        this.access=new Api();
+    }
     data ={email: '', password: ''}
     login = (e) => {
-        const {dev, main} = this.uris;
-        this.setState({json:this.data});
         e.preventDefault();
-        if (this.data.email !== "" && this.data.password !== "") {
-            const fetch = axios.create({
-                 headers: {
-                     'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                baseURL: (this.sandbox) ? dev : main
-            });
-            const params = new URLSearchParams();
-            for (const one in this.data) {
-                if (this.data.hasOwnProperty(one)) {
-                    params.append(one, this.data[one]);
+        const {email, password} = this.data;
+        if (email !== "" && password !== "") {
+
+            this.access.post("login", {email, password}).then(async (res) => {
+
+                let {result} = res, bol = false;
+                if (result && result.hasOwnProperty('token')) {
+                    if (result.token !== '') {
+                        bol=true;
+                        this.setState({success: true});
+
+                        for (const key in result) {
+                            if (result.hasOwnProperty(key)) {
+                                const  value = result[key];
+                                if (value) {
+                                    await AsyncStorage.setItem(key, value);
+                                }
+                            }
+                        }
+                    }
                 }
-            }
-            fetch.post('rest/services/login', params).then((res) => {
-                this.setState({json:res})
-            }).catch((res) => {
-                console.log(res)
-                this.setState({json:res})
+
+                if(bol){
+                    await this.props.navigation.navigate('App');
+                }
+            }).catch( (err) =>{
+                console.log(err);
             });
         }
     }
@@ -61,6 +72,13 @@ export default class SignIn extends React.Component {
             });
         }
     }*/
+    async storeUser(){
+        const user = ''
+        if(this.state.loguser !== null){
+            await AsyncStorage(user, this.state.loguser)
+        }
+    }
+
     changeMail = (email) => {
         this.data.email = email;
     }
@@ -87,13 +105,23 @@ export default class SignIn extends React.Component {
                             <TextInput onChangeText={this.changePass} secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
                                        placeholder='Password'/>
 
-                            <Text>{JSON.stringify(this.state.json)}</Text>
-
                         </View>
                         <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
                             <Text style={styles.buttonText}>LOGIN</Text>
                         </TouchableOpacity>
                     </View>
+
+                    <View style={styles.signupTextCont}>
+                        <Text style={styles.signupText}>Don't have an account yet?</Text>
+                        <View style={styles.signinButton}>
+                            <Button
+                                title="Sign Up"
+                                onPress={() =>
+                                    this.props.navigation.navigate('SignUp')
+                                }
+                            /></View>
+                    </View>
+
                 </ImageBackground>
             </View>
 
@@ -101,13 +129,17 @@ export default class SignIn extends React.Component {
 
         );
     }
-
+    /*async componentDidUpdate(prevProps, prevState, snapshot) {
+      console.log(this.state);
+        if (this.state.success) {
+            await this.props.navigation.navigate('App');
+        }
+    }*/
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
 
     },
     backgroundImage: {
@@ -116,21 +148,19 @@ const styles = StyleSheet.create({
         width: null,
         justifyContent: 'center'
     },
-
-    content:{
-        alignItems: 'center'
+    content: {
+        alignItems: 'center',
+        marginTop: 40,
     },
-
-    logoContainer:{
+    logoContainer: {
         alignItems: 'center',
         flexGrow: 1,
         justifyContent: 'center',
+        marginTop: 20,
     },
     logo: {
         width: 170,
         height: 120
-
-
     },
     title: {
         color: '#fff',
@@ -166,10 +196,26 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 16,
-
         textAlign: 'center',
+    },
+
+    signupTextCont: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    signupText: {
+
+        color: '#ffffff',
+        fontSize:15,
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 15,
+    },
+    signinButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        display: '',
     }
-
-
-
 });
