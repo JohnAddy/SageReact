@@ -8,7 +8,6 @@ export default class Api {
 
     //initialize the object's state in the class.
     // constructor(sandbox = false)
-
     constructor(sandbox = true) {
         this.sandbox = sandbox;
         this.access = axios.create({
